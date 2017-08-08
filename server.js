@@ -1,20 +1,20 @@
-const express = require('express');
-const app = express();
-const path = require('path');
-const server = require('http').createServer(app);
-const axios = require('axios');
-const querystring = require('querystring');
+var express = require('express');
+var app = express();
+var path = require('path');
+var server = require('http').createServer(app);
+var axios = require('axios');
+var querystring = require('querystring');
 
 require('dotenv').config();
 
-const bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-const instance = axios.create({
+var instance = axios.create({
   baseURL: 'https://api.imgur.com/3/',
   headers: {
     'Authorization': 'Client-ID ' + process.env.IMGUR_CLIENT_ID
@@ -22,7 +22,7 @@ const instance = axios.create({
 });
 
 app.get('/search/:query', function(req, res) {
-  const url = 'gallery/search/top/0/?' + querystring.stringify({
+  var url = 'gallery/search/top/0/?' + querystring.stringify({
     q: req.params.query
   });
   instance.get(url)
@@ -30,7 +30,7 @@ app.get('/search/:query', function(req, res) {
       res.send(result.data.data.filter(item => !item.is_album && !item.nsfw && !item.animated));
     })
     .catch(function(error) {
-      console.log(error);
+      console.log(error.response);
     });
 });
 
